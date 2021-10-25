@@ -25,7 +25,7 @@ namespace API.Controllers
 
         // -- http endpoints --
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDTO registerDto)
+        public async Task<ActionResult<UserDTO>> Register(RegisterDTO registerDto)
         {
 
             if (await UserExists(registerDto.Username)) return BadRequest("Username is taken");
@@ -42,7 +42,7 @@ namespace API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return new UserDto
+            return new UserDTO
             {
                 Username = user.UserName,
                 Token = _tokenService.CreatToken(user)
@@ -50,7 +50,7 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDTO loginDto)
+        public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDto)
         {
             var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
 
@@ -65,7 +65,7 @@ namespace API.Controllers
                 if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password");
             }
 
-            return new UserDto
+            return new UserDTO
             {
                 Username = user.UserName,
                 Token = _tokenService.CreatToken(user)
